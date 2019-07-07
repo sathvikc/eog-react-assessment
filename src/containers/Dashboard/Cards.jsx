@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from "react-redux";
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -24,33 +23,21 @@ const useStyles = makeStyles({
 const Cards = (props) => {
   const classes = useStyles();
 
-  const {selectedMetrics, metricsData} = props;
-
-  // Get all measurements data from `measurements` reducer
-  const measurementsData = useSelector((store) => {
-    const { measurements } = store;
-
-    return measurements;
-  })
+  const {cardsData} = props;
 
   return (
     <div className={classes.cardsContainer}>
       {
-        Array.isArray(selectedMetrics) && selectedMetrics.map((card) => {
-          const metricName = card;
-          const labelName = metricsData[metricName];
-          const measurementData = measurementsData[metricName];
-          const measurementDataLength = measurementData.length;
-          const metricValue = measurementData[measurementDataLength - 1].value;
-
+        cardsData.map((card) => {
+          const {id, label, value} = card;
           return (
-            <Card key={metricName} className={classes.card}>
+            <Card key={id} className={classes.card}>
               <CardContent>
                 <Typography variant="body2" component="h2">
-                  {labelName}
+                  {label}
                 </Typography>
                 <Typography variant="h5" component="p">
-                  {metricValue}
+                  {value}
                 </Typography>
               </CardContent>
             </Card>
