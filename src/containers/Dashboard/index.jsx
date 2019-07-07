@@ -1,9 +1,5 @@
 import React, { Fragment, useState } from 'react';
 
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -11,6 +7,7 @@ import {
 } from 'recharts';
 
 import Metrics from './Metrics';
+import Cards from './Cards';
 
 const mockChartData = [
   {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
@@ -25,17 +22,6 @@ const mockChartData = [
 const useStyles = makeStyles({
   dashboardContainer: {
     margin: '10px',
-  },
-  cardsContainer: {
-    display: 'flex',
-  },
-  card: {
-    'max-width': '200px',
-    'flex-grow': 1,
-    'margin-right': '10px',
-    '&:last-child': {
-      'margin-right': 0,
-    },
   }
 });
 
@@ -44,6 +30,7 @@ const Dashboard = () => {
 
   const [state, setState] = useState({});
 
+  // Metric component callback function
   const onMetricSelect = (selectedMetrics, metricsData) => {
     setState({
       selectedMetrics,
@@ -59,28 +46,7 @@ const Dashboard = () => {
 
         <Metrics onStateChange={onMetricSelect} />
 
-        {/* Cards */}
-        <div className={classes.cardsContainer}>
-          {
-            Array.isArray(selectedMetrics) && selectedMetrics.map((card) => {
-              const metricName = card;
-              const metricLabelName = metricsData[metricName];
-
-              return (
-                <Card key={metricName} className={classes.card}>
-                  <CardContent>
-                    <Typography variant="body2" component="h2">
-                      {metricLabelName}
-                    </Typography>
-                    <Typography variant="h5" component="p">
-                      108.92
-                    </Typography>
-                  </CardContent>
-                </Card>
-              );
-            })
-          }
-        </div>
+        <Cards selectedMetrics={selectedMetrics} metricsData={metricsData}  />
       </div>
 
       {/* Chart */}
