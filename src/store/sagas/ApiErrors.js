@@ -1,5 +1,4 @@
 import { takeEvery, call } from "redux-saga/effects";
-import * as actions from "../actions";
 import { toast } from "react-toastify";
 
 function* apiErrorReceived(action) {
@@ -7,7 +6,7 @@ function* apiErrorReceived(action) {
 }
 
 function* watchApiError() {
-  yield takeEvery(actions.API_ERROR, apiErrorReceived);
+  yield takeEvery('EVENT/API_ERROR_RECEIVED', apiErrorReceived);
 }
 
 export default [watchApiError];

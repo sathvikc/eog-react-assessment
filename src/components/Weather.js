@@ -5,7 +5,7 @@ import { useGeolocation } from "react-use";
 
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-import * as actions from "../store/actions";
+import * as actions from "../store/weather/actions";
 
 import Chip from "./Chip";
 
@@ -49,7 +49,7 @@ const Weather = () => {
   useEffect(
     () => {
       if (error) {
-        dispatch({ type: actions.API_ERROR, error: error.message });
+        dispatch({ type: actions.WEATHER_API_ERROR, error: error.message });
         return;
       }
       if (!data) return;
