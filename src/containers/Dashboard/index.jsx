@@ -25,21 +25,45 @@ const Dashboard = () => {
     });
   };
 
-   // Get metrics data from `metrics` reducer
-  const metricsData = useSelector((store) => {
-    const { metrics } = store.metrics;
+   // Get reducer data from store
+  const [metricsData, measurementsData] = useSelector((store) => {
+    const { metrics, measurements } = store;
 
-    return metrics;
+    const metricsData = metrics.metrics;
+    const measurementsData = measurements;
+
+    return [metricsData, measurementsData];
   });
 
   const {selectedMetrics} = state;
+
+  const displayCards = [];
+  
+  Array.isArray(selectedMetrics) && selectedMetrics.map((metric) => {
+    const metricName = metric;
+    const labelName = metricsData[metricName];
+    const measurementData = measurementsData[metricName];
+
+    if(Array.isArray(measurementData)) {
+      const measurementDataLength = measurementData.length;
+      const metricValue = measurementData[measurementDataLength - 1].value;
+
+      displayCards.push({
+        id: metricName,
+        label: labelName, 
+        value: metricValue
+      });
+    }
+
+    return null;
+  });
 
   return (
     <Fragment>
       <div className={classes.dashboardContainer}>
         <Metrics metricsData={metricsData} onStateChange={onMetricSelect} />
 
-        <Cards selectedMetrics={selectedMetrics} metricsData={metricsData}  />
+        <Cards cardsData={displayCards}  />
       </div>
 
       {
