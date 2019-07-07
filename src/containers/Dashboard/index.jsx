@@ -1,4 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useQuery } from 'urql';
 
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -15,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+
+import * as metricActions from '../../store/metrics/actions';
 
 const mockMetricsData = [
   'casingPressure',
@@ -52,10 +56,26 @@ const useStyles = makeStyles({
   }
 });
 
+const query = `query {getMetrics}`;
+
 const Dashboard = () => {
   const classes = useStyles();
-
   const [state, setState] = useState([]);
+  
+  /****** Requesting Metrics Service and Storing it in Metrics Reducer ******/
+  const dispatch = useDispatch();
+  const [result] = useQuery({ query, });
+
+  const { fetching, data, error } = result;
+
+  useEffect(() => {
+    if(!data) return;
+
+    const { getMetrics = [] } = data || {};
+
+    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics });
+  }, [dispatch, data]);
+  /****** Metrics Service Ending  ******/
 
   const handleChange = choiceName => (event) => {
     const selectedChoices = [...state];
