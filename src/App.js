@@ -4,12 +4,14 @@ import { ToastContainer } from "react-toastify";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider as URQLProvider, createClient, useQuery } from "urql";
+import { Provider as URQLProvider, createClient, defaultExchanges, subscriptionExchange } from "urql";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 
 import createStore from "./store";
 
 import Header from "./components/Header";
 import Wrapper from "./components/Wrapper";
+import Subscribe from "./components/Subscribe";
 
 import { Dashboard } from './containers';
 
@@ -32,8 +34,22 @@ const theme = createMuiTheme({
   }
 });
 
+const subscriptionClient = new SubscriptionClient(
+  `ws://react.eogresources.com/graphql`,
+  {
+    reconnect: true,
+    timeout: 20000
+  }
+);
+
 const client = createClient({
-  url: "https://react.eogresources.com/graphql"
+  url: "https://react.eogresources.com/graphql",
+  exchanges: [
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation)
+    })
+  ]
 });
 
 const App = props => (
@@ -42,6 +58,7 @@ const App = props => (
     <Provider store={store}>
       <URQLProvider value={client}>
         <Wrapper>
+          <Subscribe />
           <Header />
           <Dashboard />
           <ToastContainer />
