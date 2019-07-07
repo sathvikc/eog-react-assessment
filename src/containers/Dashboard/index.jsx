@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'urql';
 
 import FormGroup from '@material-ui/core/FormGroup';
@@ -77,6 +77,13 @@ const Dashboard = () => {
   }, [dispatch, data]);
   /****** Metrics Service Ending  ******/
 
+  // Get metrics data from `metrics` reducer
+  const metricsData = useSelector((store) => {
+    const { metrics } = store.metrics;
+
+    return metrics;
+  });
+
   const handleChange = choiceName => (event) => {
     const selectedChoices = [...state];
   
@@ -103,24 +110,27 @@ const Dashboard = () => {
         <FormControl component="fieldset">
           <FormLabel component="legend">Select Metrics:</FormLabel>
           <FormGroup row>
-            {mockMetricsData.map((metric) => {
-              const metricName = metric;
+            {
+              Object.keys(metricsData).map((metric) => {
+                const metricName = metric;
+                const metricLabelName = metricsData[metricName];
 
-              return (
-                <FormControlLabel
-                  key={metric}
-                  control={(
-                    <Checkbox
-                      checked={state[metricName]}
-                      onChange={handleChange(metricName)}
-                      value={metricName}
-                      color="primary"
-                    />
-                  )}
-                  label={metricName}
-                />
-              );
-            })}
+                return (
+                  <FormControlLabel
+                    key={metric}
+                    control={(
+                      <Checkbox
+                        checked={state[metricName]}
+                        onChange={handleChange(metricName)}
+                        value={metricName}
+                        color="primary"
+                      />
+                    )}
+                    label={metricLabelName}
+                  />
+                );
+              }
+            )}
           </FormGroup>
         </FormControl>
 
@@ -129,12 +139,13 @@ const Dashboard = () => {
           {
             state.map((card) => {
               const metricName = card;
+              const metricLabelName = metricsData[metricName];
 
               return (
                 <Card key={metricName} className={classes.card}>
                   <CardContent>
                     <Typography variant="body2" component="h2">
-                      {metricName}
+                      {metricLabelName}
                     </Typography>
                     <Typography variant="h5" component="p">
                       108.92

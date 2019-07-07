@@ -1,16 +1,30 @@
 import * as actions from './actions';
 
+import { titleCase } from '../../utils';
+
 const initialState = {
-  metrics: [],
+  metrics: {},
 };
+
+const getMetricLabelName = (metricName) => {
+  const nameArray = metricName.split(/(?=[A-Z])/);
+
+  return titleCase(nameArray).join(' ');
+};
+
+const transformMetricsData = (metricsData) => {
+  const returnData = {};
+
+  metricsData.map(((metric) => returnData[metric] = getMetricLabelName(metric)));
+
+  return returnData;
+}
 
 const metricsDataRecevied = (state, action) => {
   const { metrics } = action;
 
   return {
-    metrics: [
-      ...metrics,
-    ],
+    metrics: transformMetricsData([...metrics]),
   };
 };
 
