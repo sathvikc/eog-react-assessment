@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSubscription } from "urql";
 
+import * as measurementActions from "../store/measurements/actions";
+
 const subscriptionQuery = `
 subscription {
   newMeasurement {metric, at, value, unit}
@@ -16,8 +18,10 @@ const Subscribe = () => {
 
   useEffect(() => {
       if (!subscriptionData) return;
-
-      console.log("New Measurement", subscriptionData.newMeasurement);
+      dispatch({
+        type: measurementActions.NEW_MEASUREMENT_RECEIVED,
+        measurement: subscriptionData.newMeasurement,
+      });
     }, [subscriptionData, dispatch]
   );
 
