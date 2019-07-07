@@ -1,4 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from 'urql';
 
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -15,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+
+import * as metricActions from '../../store/metrics/actions';
 
 const mockMetricsData = [
   'casingPressure',
@@ -52,10 +56,33 @@ const useStyles = makeStyles({
   }
 });
 
+const query = `query {getMetrics}`;
+
 const Dashboard = () => {
   const classes = useStyles();
-
   const [state, setState] = useState([]);
+  
+  /****** Requesting Metrics Service and Storing it in Metrics Reducer ******/
+  const dispatch = useDispatch();
+  const [result] = useQuery({ query, });
+
+  const { fetching, data, error } = result;
+
+  useEffect(() => {
+    if(!data) return;
+
+    const { getMetrics = [] } = data || {};
+
+    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics });
+  }, [dispatch, data]);
+  /****** Metrics Service Ending  ******/
+
+  // Get metrics data from `metrics` reducer
+  const metricsData = useSelector((store) => {
+    const { metrics } = store.metrics;
+
+    return metrics;
+  });
 
   const handleChange = choiceName => (event) => {
     const selectedChoices = [...state];
@@ -83,24 +110,27 @@ const Dashboard = () => {
         <FormControl component="fieldset">
           <FormLabel component="legend">Select Metrics:</FormLabel>
           <FormGroup row>
-            {mockMetricsData.map((metric) => {
-              const metricName = metric;
+            {
+              Object.keys(metricsData).map((metric) => {
+                const metricName = metric;
+                const metricLabelName = metricsData[metricName];
 
-              return (
-                <FormControlLabel
-                  key={metric}
-                  control={(
-                    <Checkbox
-                      checked={state[metricName]}
-                      onChange={handleChange(metricName)}
-                      value={metricName}
-                      color="primary"
-                    />
-                  )}
-                  label={metricName}
-                />
-              );
-            })}
+                return (
+                  <FormControlLabel
+                    key={metric}
+                    control={(
+                      <Checkbox
+                        checked={state[metricName]}
+                        onChange={handleChange(metricName)}
+                        value={metricName}
+                        color="primary"
+                      />
+                    )}
+                    label={metricLabelName}
+                  />
+                );
+              }
+            )}
           </FormGroup>
         </FormControl>
 
@@ -109,12 +139,13 @@ const Dashboard = () => {
           {
             state.map((card) => {
               const metricName = card;
+              const metricLabelName = metricsData[metricName];
 
               return (
                 <Card key={metricName} className={classes.card}>
                   <CardContent>
                     <Typography variant="body2" component="h2">
-                      {metricName}
+                      {metricLabelName}
                     </Typography>
                     <Typography variant="h5" component="p">
                       108.92
