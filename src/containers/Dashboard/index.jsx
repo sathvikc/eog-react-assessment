@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -18,19 +19,25 @@ const Dashboard = () => {
   const [state, setState] = useState({});
 
   // Metric component callback function
-  const onMetricSelect = (selectedMetrics, metricsData) => {
+  const onMetricSelect = (selectedMetrics) => {
     setState({
-      selectedMetrics,
-      metricsData
+      selectedMetrics
     });
   };
 
-  const {selectedMetrics, metricsData} = state;
+   // Get metrics data from `metrics` reducer
+  const metricsData = useSelector((store) => {
+    const { metrics } = store.metrics;
+
+    return metrics;
+  });
+
+  const {selectedMetrics} = state;
 
   return (
     <Fragment>
       <div className={classes.dashboardContainer}>
-        <Metrics onStateChange={onMetricSelect} />
+        <Metrics metricsData={metricsData} onStateChange={onMetricSelect} />
 
         <Cards selectedMetrics={selectedMetrics} metricsData={metricsData}  />
       </div>

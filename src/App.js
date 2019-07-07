@@ -12,6 +12,7 @@ import createStore from "./store";
 import Header from "./components/Header";
 import Wrapper from "./components/Wrapper";
 import Subscribe from "./components/Subscribe";
+import GetMetricsData from "./components/GetMetricsData";
 
 import { Dashboard } from './containers';
 
@@ -59,6 +60,7 @@ const App = props => (
       <URQLProvider value={client}>
         <Wrapper>
           <Subscribe />
+          <GetMetricsData />
           <Header />
           <Dashboard />
           <ToastContainer />
