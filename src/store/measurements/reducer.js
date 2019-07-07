@@ -1,15 +1,21 @@
 import * as actions from './actions';
 
-const initialState = {
-  measurements: []
-};
+const initialState = {};
+
+const transformMeasurementData = (measurement, state) => {
+  const metricName = measurement.metric;
+  const prevMeasurements = state[metricName] || [];
+
+  return {
+    ...state,
+    [metricName]: [...prevMeasurements, measurement]
+  }
+}
 
 const measurementDataRecevied = (state, action) => {
   const { measurement } = action;
 
-  return { 
-    measurements: [...state.measurements, measurement]
-  };
+  return transformMeasurementData(measurement, state);
 };
 
 const handlers = {

@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import { useSelector } from "react-redux";
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -44,6 +45,7 @@ const Dashboard = () => {
 
   const [state, setState] = useState({});
 
+  // Metric component callback function
   const onMetricSelect = (selectedMetrics, metricsData) => {
     setState({
       selectedMetrics,
@@ -52,6 +54,13 @@ const Dashboard = () => {
   };
 
   const {selectedMetrics, metricsData} = state;
+
+  /** Get all measurements data */
+  const measurementsData = useSelector((store) => {
+    const { measurements } = store;
+
+    return measurements;
+  })
 
   return (
     <Fragment>
@@ -64,16 +73,19 @@ const Dashboard = () => {
           {
             Array.isArray(selectedMetrics) && selectedMetrics.map((card) => {
               const metricName = card;
-              const metricLabelName = metricsData[metricName];
+              const labelName = metricsData[metricName];
+              const measurementData = measurementsData[metricName];
+              const measurementDataLength = measurementData.length;
+              const metricValue = measurementData[measurementDataLength - 1].value;
 
               return (
                 <Card key={metricName} className={classes.card}>
                   <CardContent>
                     <Typography variant="body2" component="h2">
-                      {metricLabelName}
+                      {labelName}
                     </Typography>
                     <Typography variant="h5" component="p">
-                      108.92
+                      {metricValue}
                     </Typography>
                   </CardContent>
                 </Card>
