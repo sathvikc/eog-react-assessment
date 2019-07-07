@@ -6,11 +6,13 @@ import sagas from "./sagas";
 
 import weatherReducer from "./weather/reducer";
 import metricsReducer from "./metrics/reducer";
+import measurementsReducer from "./measurements/reducer";
 
 export default () => {
   const rootReducer = combineReducers({
     weather: weatherReducer,
-    metrics: metricsReducer
+    metrics: metricsReducer,
+    measurements: measurementsReducer,
   });
 
   const composeEnhancers = composeWithDevTools({});
