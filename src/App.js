@@ -62,9 +62,10 @@ const App = () => (
       <URQLProvider value={client}>
         <Wrapper>
           <Subscribe />
-          <GetMetricsData />
           <Header />
-          <Dashboard />
+          <GetMetricsData>
+            <Dashboard />
+          </GetMetricsData>
           <ToastContainer />
         </Wrapper>
       </URQLProvider>
