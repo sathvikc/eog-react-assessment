@@ -1,31 +1,51 @@
 import React from 'react';
 
 import {
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 } from 'recharts';
 
-const mockChartData = [
-  {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
-  {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
-  {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
-  {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
-  {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
-  {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
-  {name: 'Page G', uv: 3490, pv: 4300, amt: 2100},
+import { convertTimestampToTime } from '../../utils';
+
+const colors = [
+  '#bb83bf',
+  '#3766df',
+  '#d4ea54',
+  '#e05661',
+  '#6fba50',
+  '#b17631'
 ];
 
-const Chart = () => {
+const tickFormatter = (tick) => convertTimestampToTime(tick);
+
+const Chart = (props) => {
+  const {data} = props;
+
+  if(!data) return 'Loading Chart with selected Metric...';
+
   return (
     <ResponsiveContainer>
-      <LineChart data={mockChartData}>
+      <LineChart>
         <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis dataKey="name"/>
-        <YAxis yAxisId="left" />
-        <YAxis yAxisId="right" />
-        <Tooltip/>
-        <Legend />
-        <Line yAxisId="left" type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{r: 8}}/>
-        <Line yAxisId="right" type="monotone" dataKey="uv" stroke="#82ca9d" />
+        <XAxis 
+          dataKey='at' 
+          type='number' 
+          scale='time'
+          interval="preserveEnd" 
+          tickFormatter={tickFormatter} 
+          domain={['dataMin', 'dataMax']} />
+        {
+          data.map(s => (
+            <YAxis key={s.name} yAxisId={s.unit} dataKey="value" label={{ value: s.unit, angle: -90, position: 'insideLeft'}} />
+          ))
+        }
+
+        <Tooltip labelFormatter={tickFormatter}  />
+
+        {
+          data.map((s, inx) => (
+            <Line dataKey="value" yAxisId={s.unit} stroke={colors[inx]} data={s.data} name={s.label} key={s.name} />
+          ))
+        }
       </LineChart>
     </ResponsiveContainer>
   );

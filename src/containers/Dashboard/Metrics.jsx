@@ -6,6 +6,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 
+let latestSelectedMetric = '';
+
 const Metrics = (props) => {
   const [state, setState] = useState([]);
 
@@ -13,14 +15,15 @@ const Metrics = (props) => {
   const { metricsData, onStateChange } = props;
 
   useEffect(() => {
-    onStateChange(state);
-  }, [state]);
+    onStateChange(state, latestSelectedMetric);
+  }, [state, onStateChange]);
 
   // Checkbox form onChange Event handler
   const handleChange = metricName => (event) => {
     const selectedChoices = [...state];
   
     if (event.target.checked) {
+      latestSelectedMetric = metricName;
       selectedChoices.push(metricName);
     } else {
       const index = selectedChoices.indexOf(metricName);
@@ -63,6 +66,6 @@ const Metrics = (props) => {
       </FormGroup>
     </FormControl>
   );
-}
+};
 
 export default Metrics;
