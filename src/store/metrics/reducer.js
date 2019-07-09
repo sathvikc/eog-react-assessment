@@ -9,10 +9,14 @@ const initialState = {
 const transformMetricsData = (metricsData) => {
   const returnData = {};
 
-  metricsData.map(((metric) => returnData[metric] = getMetricLabelName(metric)));
+  metricsData.map((metric) => {
+    returnData[metric] = getMetricLabelName(metric);
+
+    return null;
+  });
 
   return returnData;
-}
+};
 
 const metricsDataRecevied = (state, action) => {
   const { metrics } = action;

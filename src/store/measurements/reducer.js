@@ -6,20 +6,20 @@ import * as actions from './actions';
 
 const initialState = {
   measurements: {},
-  measurement: {}
+  measurement: {},
 };
 
-const mutipleMeasurementsDataReceived = (state, action) => produce(state, draftState => {
+const mutipleMeasurementsDataReceived = (state, action) => produce(state, (draftState) => {
   const { measurements, metric } = action;
 
-  if(metric) {
+  if (metric) {
     const allMetricMeasurements = measurements.getMeasurements;
-    const unit = allMetricMeasurements[0] && allMetricMeasurements[0]['unit'];
+    const unit = allMetricMeasurements[0] && allMetricMeasurements[0].unit;
 
     draftState.measurements[metric] = {
       label: getMetricLabelName(metric),
       name: metric,
-      unit: unit,
+      unit,
       data: allMetricMeasurements,
     };
   }
@@ -27,17 +27,17 @@ const mutipleMeasurementsDataReceived = (state, action) => produce(state, draftS
   return draftState;
 });
 
-const measurementDataReceived = (state, action) => produce(state, draftState => {
+const measurementDataReceived = (state, action) => produce(state, (draftState) => {
   const { measurement } = action;
-  const {metric} = measurement;
+  const { metric } = measurement;
 
   // Measurement Object
   draftState.measurement[metric] = measurement;
 
   // Measurement(s) Object
-  let measurements = draftState.measurements[metric];
+  const measurements = draftState.measurements[metric];
 
-  if(measurements) {
+  if (measurements) {
     measurements.data.push(measurement);
   }
 
@@ -46,7 +46,7 @@ const measurementDataReceived = (state, action) => produce(state, draftState => 
 
 const handlers = {
   [actions.NEW_MEASUREMENT_RECEIVED]: measurementDataReceived,
-  [actions.MULTIPLE_MEASUREMENTS_RECEIVED]: mutipleMeasurementsDataReceived
+  [actions.MULTIPLE_MEASUREMENTS_RECEIVED]: mutipleMeasurementsDataReceived,
 };
 
 export default (state = initialState, action) => {

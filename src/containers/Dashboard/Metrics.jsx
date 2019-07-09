@@ -21,18 +21,18 @@ const Metrics = (props) => {
   // Checkbox form onChange Event handler
   const handleChange = metricName => (event) => {
     const selectedChoices = [...state];
-  
+
     if (event.target.checked) {
       latestSelectedMetric = metricName;
       selectedChoices.push(metricName);
     } else {
       const index = selectedChoices.indexOf(metricName);
-  
+
       if (index > -1) {
         selectedChoices.splice(index, 1);
       }
     }
-  
+
     setState([
       ...selectedChoices,
     ]);
@@ -61,8 +61,7 @@ const Metrics = (props) => {
                 label={metricLabelName}
               />
             );
-          }
-        )}
+          })}
       </FormGroup>
     </FormControl>
   );

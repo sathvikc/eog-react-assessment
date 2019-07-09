@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useQuery } from "urql";
-import { useGeolocation } from "react-use";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from 'urql';
+import { useGeolocation } from 'react-use';
 
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-import * as actions from "../store/weather/actions";
+import * as actions from '../store/weather/actions';
 
-import Chip from "./Chip";
+import Chip from './Chip';
 
 const query = `
   query($latLong: WeatherQuery!) {
@@ -18,12 +18,12 @@ const query = `
     }
   }`;
 
-const getWeather = state => {
+const getWeather = (state) => {
   const { temperatureinFahrenheit, description, locationName } = state.weather;
   return {
     temperatureinFahrenheit,
     description,
-    locationName
+    locationName,
   };
 };
 
@@ -32,18 +32,18 @@ const Weather = () => {
   // Default to houston
   const latLong = {
     latitude: getLocation.latitude || 29.7604,
-    longitude: getLocation.longitude || -95.3698
+    longitude: getLocation.longitude || -95.3698,
   };
   const dispatch = useDispatch();
   const { temperatureinFahrenheit, description, locationName } = useSelector(
-    getWeather
+    getWeather,
   );
 
   const [result] = useQuery({
     query,
     variables: {
-      latLong
-    }
+      latLong,
+    },
   });
   const { fetching, data, error } = result;
   useEffect(
@@ -56,7 +56,7 @@ const Weather = () => {
       const { getWeatherForLocation } = data;
       dispatch({ type: actions.WEATHER_DATA_RECEIVED, getWeatherForLocation });
     },
-    [dispatch, data, error]
+    [dispatch, data, error],
   );
 
   if (fetching) return <LinearProgress />;

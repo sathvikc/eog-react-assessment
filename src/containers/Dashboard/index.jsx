@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, {
+  Fragment, useState, useEffect, useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'urql';
 
@@ -25,7 +27,7 @@ const query = `
 const useStyles = makeStyles({
   dashboardContainer: {
     margin: '10px',
-  }
+  },
 });
 
 const transformChartData = (measurementsData, selectedMetrics) => {
@@ -37,12 +39,12 @@ const transformChartData = (measurementsData, selectedMetrics) => {
     return null;
   });
 
-  if(chartData.includes(undefined)) {
+  if (chartData.includes(undefined)) {
     return null;
   }
 
   return chartData;
-}
+};
 
 const afterTimestamp = getThirtyMinutesBeforeTimestamp();
 
@@ -51,18 +53,18 @@ const Dashboard = () => {
 
   const [state, setState] = useState({
     selectedMetrics: [],
-    latestSelectedMetric: ''
+    latestSelectedMetric: '',
   });
 
   // Metric component callback function
   const onMetricSelect = (selectedMetrics, latestSelectedMetric) => {
     setState({
       selectedMetrics,
-      latestSelectedMetric
+      latestSelectedMetric,
     });
   };
 
-   // Get reducer data from store
+  // Get reducer data from store
   const [metricsData, measurementsData, measurementData] = useSelector((store) => {
     const { metrics, measurements } = store;
 
@@ -74,11 +76,11 @@ const Dashboard = () => {
     return [metricsData, measurementsData, measurementData];
   });
 
-  let {selectedMetrics, latestSelectedMetric} = state;
+  const { selectedMetrics, latestSelectedMetric } = state;
 
   // Card Component Data
   const displayCards = [];
-  
+
   selectedMetrics.map((metric) => {
     const metricName = metric;
     const labelName = metricsData[metricName];
@@ -87,39 +89,39 @@ const Dashboard = () => {
 
     displayCards.push({
       id: metricName,
-      label: labelName, 
-      value: metricValue
+      label: labelName,
+      value: metricValue,
     });
 
     return null;
   });
-  
+
   // Charts
   const dispatch = useDispatch();
-  
+
   const receiveMeasurements = useCallback((data, latestSelectedMetric) => {
     dispatch({
-      type: measurementActions.MULTIPLE_MEASUREMENTS_RECEIVED, 
+      type: measurementActions.MULTIPLE_MEASUREMENTS_RECEIVED,
       measurements: data,
-      metric: latestSelectedMetric
+      metric: latestSelectedMetric,
     });
   }, [dispatch]);
 
-  const [result] = useQuery({ 
+  const [result] = useQuery({
     query,
     variables: {
       input: {
         metricName: latestSelectedMetric,
-        after: afterTimestamp
-      }
-    }
+        after: afterTimestamp,
+      },
+    },
   }, [latestSelectedMetric]);
 
   const { data } = result;
 
   useEffect(() => {
-    if(!data) return;
-    
+    if (!data) return;
+
     receiveMeasurements(data, latestSelectedMetric);
   }, [receiveMeasurements, data]);
 
@@ -130,7 +132,7 @@ const Dashboard = () => {
       <div className={classes.dashboardContainer}>
         <Metrics metricsData={metricsData} onStateChange={onMetricSelect} />
 
-        <Cards cardsData={displayCards}  />
+        <Cards cardsData={displayCards} />
       </div>
 
       {
@@ -142,6 +144,6 @@ const Dashboard = () => {
       }
     </Fragment>
   );
-}
+};
 
 export default Dashboard;
