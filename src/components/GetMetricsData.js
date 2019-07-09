@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from 'urql';
 
@@ -8,6 +8,9 @@ const query = `query {getMetrics}`;
 
 const GetMetricsData = () => {
   const dispatch = useDispatch();
+  const getMetricsData = useCallback(getMetrics => 
+    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics }),
+  [dispatch]);
   const [result] = useQuery({ query, });
 
   const { fetching, data, error } = result;
@@ -17,8 +20,8 @@ const GetMetricsData = () => {
 
     const { getMetrics = [] } = data || {};
 
-    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics });
-  }, [dispatch, data]);
+    getMetricsData(getMetrics);
+  }, [getMetricsData, data]);
 
   return null;
 }
