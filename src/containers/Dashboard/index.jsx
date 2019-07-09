@@ -99,11 +99,11 @@ const Dashboard = () => {
   // Charts
   const dispatch = useDispatch();
 
-  const receiveMeasurements = useCallback((data, latestSelectedMetric) => {
+  const receiveMeasurements = useCallback((data, selectedMetric) => {
     dispatch({
       type: measurementActions.MULTIPLE_MEASUREMENTS_RECEIVED,
       measurements: data,
-      metric: latestSelectedMetric,
+      metric: selectedMetric,
     });
   }, [dispatch]);
 
@@ -121,7 +121,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!data) return;
-
+    // latestSelectedMetric - No need to a dependency for useEffect hook.
     receiveMeasurements(data, latestSelectedMetric);
   }, [receiveMeasurements, data]);
 

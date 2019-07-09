@@ -1,5 +1,9 @@
 import React from 'react';
 
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 } from 'recharts';
@@ -15,12 +19,31 @@ const colors = [
   '#b17631',
 ];
 
+const useStyles = makeStyles(theme => ({
+  progressBarContainer: {
+    margin: '10px',
+  },
+  progress: {
+    margin: theme.spacing(2),
+  },
+}));
+
 const tickFormatter = tick => convertTimestampToTime(tick);
 
 const Chart = (props) => {
   const { data } = props;
+  const classes = useStyles();
 
-  if (!data) return 'Loading Chart with selected Metric...';
+  if (!data) {
+    return (
+      <div className={classes.progressBarContainer}>
+        <CircularProgress className={classes.progress} />
+        <Typography variant="h6" component="span">
+          Loading Chart with selected Metric...
+        </Typography>
+      </div>
+    );
+  }
 
   return (
     <ResponsiveContainer>
