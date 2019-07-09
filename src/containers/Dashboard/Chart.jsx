@@ -12,34 +12,35 @@ const colors = [
   '#d4ea54',
   '#e05661',
   '#6fba50',
-  '#b17631'
+  '#b17631',
 ];
 
-const tickFormatter = (tick) => convertTimestampToTime(tick);
+const tickFormatter = tick => convertTimestampToTime(tick);
 
 const Chart = (props) => {
-  const {data} = props;
+  const { data } = props;
 
-  if(!data) return 'Loading Chart with selected Metric...';
+  if (!data) return 'Loading Chart with selected Metric...';
 
   return (
     <ResponsiveContainer>
       <LineChart>
-        <CartesianGrid strokeDasharray="3 3"/>
-        <XAxis 
-          dataKey='at' 
-          type='number' 
-          scale='time'
-          interval="preserveEnd" 
-          tickFormatter={tickFormatter} 
-          domain={['dataMin', 'dataMax']} />
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="at"
+          type="number"
+          scale="time"
+          interval="preserveEnd"
+          tickFormatter={tickFormatter}
+          domain={['dataMin', 'dataMax']}
+        />
         {
           data.map(s => (
-            <YAxis key={s.name} yAxisId={s.unit} dataKey="value" label={{ value: s.unit, angle: -90, position: 'insideLeft'}} />
+            <YAxis key={s.name} yAxisId={s.unit} dataKey="value" label={{ value: s.unit, angle: -90, position: 'insideLeft' }} />
           ))
         }
 
-        <Tooltip labelFormatter={tickFormatter}  />
+        <Tooltip labelFormatter={tickFormatter} />
 
         {
           data.map((s, inx) => (
@@ -49,6 +50,6 @@ const Chart = (props) => {
       </LineChart>
     </ResponsiveContainer>
   );
-}
+};
 
 export default Chart;

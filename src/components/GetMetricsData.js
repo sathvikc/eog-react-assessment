@@ -4,19 +4,21 @@ import { useQuery } from 'urql';
 
 import * as metricActions from '../store/metrics/actions';
 
-const query = `query {getMetrics}`;
+const query = 'query {getMetrics}';
 
 const GetMetricsData = () => {
   const dispatch = useDispatch();
-  const getMetricsData = useCallback(getMetrics => 
-    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics }),
-  [dispatch]);
-  const [result] = useQuery({ query, });
 
-  const { fetching, data, error } = result;
+  const getMetricsData = useCallback((getMetrics) => {
+    dispatch({ type: metricActions.GET_METRICS_DATA, metrics: getMetrics });
+  }, [dispatch]);
+
+  const [result] = useQuery({ query });
+
+  const { data } = result;
 
   useEffect(() => {
-    if(!data) return;
+    if (!data) return;
 
     const { getMetrics = [] } = data || {};
 
@@ -24,6 +26,6 @@ const GetMetricsData = () => {
   }, [getMetricsData, data]);
 
   return null;
-}
+};
 
 export default GetMetricsData;

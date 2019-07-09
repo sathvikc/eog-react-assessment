@@ -1,8 +1,8 @@
-import { useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { useSubscription } from "urql";
+import { useEffect, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSubscription } from 'urql';
 
-import * as measurementActions from "../store/measurements/actions";
+import * as measurementActions from '../store/measurements/actions';
 
 const subscriptionQuery = `
 subscription {
@@ -14,21 +14,19 @@ const Subscribe = () => {
   const dispatch = useDispatch();
 
   const receiveNewMeasurement = useCallback(subscriptionData => dispatch({
-      type: measurementActions.NEW_MEASUREMENT_RECEIVED,
-      measurement: subscriptionData.newMeasurement,
-    }),
-    [dispatch]
-  );
+    type: measurementActions.NEW_MEASUREMENT_RECEIVED,
+    measurement: subscriptionData.newMeasurement,
+  }),
+  [dispatch]);
 
   const [subscriptionResponse] = useSubscription({ query: subscriptionQuery });
   const { data: subscriptionData } = subscriptionResponse;
 
   useEffect(() => {
-      if (!subscriptionData) return;
+    if (!subscriptionData) return;
 
-      receiveNewMeasurement(subscriptionData);
-    }, [subscriptionData, dispatch, receiveNewMeasurement]
-  );
+    receiveNewMeasurement(subscriptionData);
+  }, [subscriptionData, dispatch, receiveNewMeasurement]);
 
   return null;
 };

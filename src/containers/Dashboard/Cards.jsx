@@ -17,19 +17,19 @@ const useStyles = makeStyles({
     '&:last-child': {
       'margin-right': 0,
     },
-  }
+  },
 });
 
 const Cards = (props) => {
   const classes = useStyles();
 
-  const {cardsData} = props;
+  const { cardsData } = props;
 
   return (
     <div className={classes.cardsContainer}>
       {
         cardsData.map((card) => {
-          const {id, label, value} = card;
+          const { id, label, value } = card;
           return (
             <Card key={id} className={classes.card}>
               <CardContent>
@@ -46,6 +46,6 @@ const Cards = (props) => {
       }
     </div>
   );
-}
+};
 
 export default Cards;
